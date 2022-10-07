@@ -1,16 +1,21 @@
 import { Request, Response } from 'express';
 import Leg from "../service/post"
 
-// const Schema = mongoose.Schema
-
-// const testCollectionSchema = new Schema({}, { strict: false })
-// const col = mongoose.model('fcllegs', testCollectionSchema);
-
 export class Controller{
     private getleg=new Leg();
     constructor(){
         this.getleg= new Leg();
     }
+count = async (req: Request, res: Response)=> {
+    
+      try{
+          const response= await this.getleg.count(req)
+       res.send(""+response)
+      } catch(err){
+        res.send(err);
+      }
+   }
+
 
 batchcode = async (req: Request, res: Response)=> {
     
@@ -22,6 +27,17 @@ batchcode = async (req: Request, res: Response)=> {
         }
      }
 
+ filter = async (req: Request, res: Response)=> {
+    
+      try{
+          const response= await this.getleg.filter(req)
+       res.send(response)
+      } catch(err){
+        res.send(err);
+      }
+   }
+   
+   
 leg = async (req: Request, res: Response)=> {
     
    try{
@@ -137,6 +153,16 @@ updateoperation = async (req: Request, res: Response)=> {
     
    try{
        const response= await this.getleg.updateoperation(req)
+    res.send(response)
+   } catch(err){
+     res.send(err);
+   }
+}
+
+update = async (req: Request, res: Response)=> {
+    
+   try{
+       const response= await this.getleg.update(req)
     res.send(response)
    } catch(err){
      res.send(err);

@@ -19,6 +19,12 @@ export class Routes {
         app.get("/charge",this.Controller.charge)
         app.get("/loadtypes",this.Controller.loadtypes)
         app.get("/batchcode",this.Controller.batchcode)
+        
+        //Get Count Endpoint
+        app.get("/count",this.Controller.count)
+
+        //Get filter label endpoint
+        app.get("/filter",this.Controller.filter)
 
         // Update charges endpoint
         app.put("/removecharge/:_id",this.Controller.removecharge)
@@ -27,6 +33,12 @@ export class Routes {
 
         // update Operation endpoint
         app.put("/updateoperation/:_id",this.Controller.updateoperation)
+
+        // update many endpoint
+        app.put("/update",this.Controller.update)
+
+
+
         // POST endpoint
         //  .post(this.colController.addNewcol);
        

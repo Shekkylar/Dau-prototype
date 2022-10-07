@@ -5,7 +5,7 @@ import { Routes } from "./routes/post";
 import express from "express";
 
 class App {
-  public mongoUrl: string = 'mongodb+srv://shekkylar18:Abcd1234@cluster0.df6shmm.mongodb.net/rate';  
+  public mongoUrl: string = 'mongodb+srv://shekkylar:QW4uOZhQT9m2uAH0@poc-cluster.mjx60.mongodb.net/rate';  
   public app: Application;
   public post: Routes = new Routes()
 
@@ -22,10 +22,11 @@ class App {
       //support application/x-www-form-urlencoded post data
       this.app.use(bodyParser.urlencoded({ extended: false }));
     }
-    private mongoSetup(): void{
+    private async mongoSetup(): Promise<void>{
       (<any>mongoose).Promise = global.Promise;
-      mongoose.connect(this.mongoUrl);
-
+     await mongoose.connect(this.mongoUrl, {
+      serverSelectionTimeoutMS: 100000,
+      });
   }
 }
 

@@ -4,8 +4,17 @@ import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema
 
 const testCollectionSchema = new Schema({}, { strict: false })
-const col = mongoose.model('fcllegs', testCollectionSchema);
+const col = mongoose.model('demo fcllegs', testCollectionSchema);
 
+export const filter = async (agg:any)=>{
+    const res = await col.aggregate(agg, (err: any, col: any) => {
+          if(err){
+              return(err);
+          }
+          return col;
+      });  
+      return res;
+  }
 
 export const getleg = async (agg:any)=>{
   const res = await col.aggregate(agg, (err: any, col: any) => {
@@ -17,11 +26,21 @@ export const getleg = async (agg:any)=>{
     return res;
 }
 
-export const batchcode = async (filter:any)=>{
-       const res = await col.find(filter)
+export const batchcode = async (filter:any,skip:any,limit:any)=>{
+
+    var y: number = +skip
+    var z: number = +limit
+    console.log(y)
+    console.log(z)
+       const res = await col.find(filter).skip(y*z).limit(z)
+       console.log(res)
        return res;
   }
 
+  export const count = async (filter:any)=>{
+    const res = await col.countDocuments(filter)
+    return (res);
+}  
 
   export const removecharge = async (_id:any,charge_id:any)=>{
 
@@ -89,6 +108,22 @@ export const updateoperation = async (_id:any,filter:any)=>{
         {'_id': Object(_id)}, 
         { $set: filter }
      );
+     a="update successful"
+    return a;
+}
+
+export const update = async (bulkData:any)=>{
+
+    var a:string
+    // console.log(filter)
+    col.bulkWrite(bulkData, function(err, res) {
+        if (err) throw err;
+        //console.log("Connected Successfully",res);
+    
+    }); 
+    
+
+
      a="update successful"
     return a;
 }

@@ -1,20 +1,75 @@
 import { Request, Response } from 'express';
-import { getleg, batchcode, removecharge, updatecharge, addcharge, updateoperation } from '../repoistory/post';
+
+import { getleg, batchcode, removecharge, updatecharge, addcharge, updateoperation, update, count, filter } from '../repoistory/post';
 
 export default class Leg{
+
+  public async count(req:Request) {
+
+    const filter=req.query;
+    console.log(req.query)
+      const leg:any= await count(filter);
+      return leg;
+}
 
   public async batchcode(req:Request) {
 
     const filter=req.query;
+    const skip=req.query.skip;
+    const limit=req.query.limit;
     for (let x in filter) {
-      if(filter[x]==''){
+      if(filter[x]==null||undefined){
         delete filter[x]
       }
     }
+    delete filter.skip;
+    delete filter.limit;
     console.log(filter)
-      const leg:any= await batchcode(filter);
+      const leg:any= await batchcode(filter,skip,limit);
       return leg;
 }
+
+public async filter(req:Request) {
+  const agg = [
+    {
+      '$match': {
+        'data.batchcode': '0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWr'
+      }
+    }, {
+      '$group': {
+        '_id': 'datas',
+        'origin_port': {
+          '$addToSet': '$meta.origin_port'
+        },
+        'destination_port': {
+          '$addToSet': '$meta.destination_port'
+        },
+        'leg_code': {
+          '$addToSet': '$meta.leg_code'
+        },
+        'vendor_name': {
+          '$addToSet': '$data.vendor.vendor_name'
+        },
+        'sub_vendor': {
+          '$addToSet': '$data.sub_vendor.sub_vendor_name'
+        },
+        'cargo_type': {
+          '$addToSet': '$data.cargo_type'
+        },
+        'load_type': {
+          '$addToSet': '$meta.load_type'
+        }
+      }
+    }, {
+      '$project': {
+        '_id': 0
+      }
+    }
+  ];
+    const leg:any= await filter(agg);
+    return leg;
+}
+
 
     public async getleg(req:Request) {
         const agg = [
@@ -213,4 +268,77 @@ public async updateoperation(req:Request) {
   const leg:any= await updateoperation(req.params._id,req.query);
   return leg;
 }
+
+public async update(req:Request) {
+  // const singleBatchCount = 10000;
+//  console.log(req.query)
+  let updatefield = req.query;
+  let filter=updatefield;
+  console.log(Object.values(filter).pop())
+  let a=(Object.keys(filter).pop())
+  // filter[a]
+//   for(let x in updatefield){
+//     if(updatefield[x]!=Object.values(updatefield).pop()){
+//         delete updatefield[x]
+//       }
+// }
+
+// for(let x in filter){
+//   // if(filter[x]==Object.values(filter).pop()){
+//   //     delete filter[x]
+//   //   }
+//   console.log(x)
+// }
+
+// console.log(filter)
+// console.log(updatefield)
+  
+
+  let records= await count(req.query);
+  // console.log(req.query)
+  console.log(records)
+
+  // const noOfProcess = Math.ceil(records/singleBatchCount);
+  // console.log(noOfProcess)
+  
+//   for(let index = 1; index <= noOfProcess; index++) {       
+//     let startCount = (index == 1) ? index : (((index - 1) * singleBatchCount) + 1); 
+//     let endCount = index * singleBatchCount;
+//     console.log(startCount)
+//     console.log(endCount)
+//     let bulkData = [];
+//     for(let index = startCount; index <= endCount; index++ ){ 
+//       bulkData.push({ updateOne: {
+//           filter: {'data.slab':{$ne : "30009"}},
+//           update: { $set: { 'data.slab': '30009' } }
+//        } },)
+//       }
+//   const leg:any= await update(bulkData);
+// }
+  while(records>0)
+  {
+    let bulkData = [];
+    if(records>10000){
+    for(let index = 0; index <= 10000; index++ ){ 
+            bulkData.push({ updateOne: {
+              filter: {'data.batchcode':{$ne : "0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk"}},
+              update: { $set: { 'data.batchcode': '0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk' } }
+             } },)
+            }await update(bulkData);
+            records-=10000;
+          }
+    else{
+      for(let index = 0; index <= records; index++ ){ 
+        bulkData.push({ updateOne: {
+            filter: {'data.batchcode':{$ne : "0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk"}},
+            update: { $set: { 'data.batchcode': '0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk' } }
+         } },)
+        }
+        await update(bulkData);
+        records-=records;
+        // console.log(records)
+      }
+    }     
+    
+  }
 }
