@@ -16,12 +16,15 @@
     "@types/express": "^4.17.14",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.7.18",
+    "@types/sleep": "^0.0.8",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "mongoose": "^6.6.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
+    "sleep": "^6.3.0",
+    "sleep-promise": "^9.1.0",
     "tsc": "^2.0.4"
   },
   "devDependencies": {

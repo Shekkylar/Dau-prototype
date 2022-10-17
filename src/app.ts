@@ -1,7 +1,7 @@
 import { Application } from "express";
 import * as mongoose from "mongoose";
 import bodyParser from "body-parser";
-import { Routes } from "./routes/post";
+import { Routes } from "./routes/routes";
 import express from "express";
 
 class App {
@@ -24,10 +24,9 @@ class App {
     }
     private async mongoSetup(): Promise<void>{
       (<any>mongoose).Promise = global.Promise;
-     await mongoose.connect(this.mongoUrl, {
-      serverSelectionTimeoutMS: 100000,
-      });
+     await mongoose.connect(this.mongoUrl).then(() => console.log('Database connected'))
+      };
   }
-}
+
 
 export default new App().app;
