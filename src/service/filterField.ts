@@ -16,9 +16,16 @@ export default class filterField{
 
   //origin
   public async origin(req:Request) {
+    let filter=req.query;
+    for (let x in filter) {
+      if(filter[x]=='null'||filter[x]=='undefined'||filter[x]==''){
+        delete filter[x]
+      }
+    }
+
     const agg = [
               {
-                '$match': req.query
+                '$match': filter
               }, {
                 '$project': {
                   '_id': 0,
@@ -29,16 +36,22 @@ export default class filterField{
                   '_id': '$meta.origin_port'
                 }
               }
-            ];
+            ];     
       const Origin:any= await origin(agg);
       return Origin;
 } 
 
   //destination
   public async destination(req:Request) {
+    let filter=req.query;
+    for (let x in filter) {
+      if(filter[x]=='null'||filter[x]=='undefined'||filter[x]==''){
+        delete filter[x]
+      }
+    }
     const agg = [
       {
-        '$match': req.query
+        '$match': filter
       }, {
         '$project': {
           '_id': 0,
