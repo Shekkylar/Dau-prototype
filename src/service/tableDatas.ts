@@ -12,7 +12,7 @@ export default class tableDatas{
     const skip=req.query.skip;
     const limit=req.query.limit;
     for (let x in filter) {
-      if(filter[x]==null||undefined){
+      if(filter[x]=='null'||filter[x]=='undefined'||filter[x]==''){
         delete filter[x]
       }
     }
