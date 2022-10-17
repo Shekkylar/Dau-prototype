@@ -1,10 +1,4 @@
-import * as mongoose from 'mongoose';
-// import { Request, Response } from 'express';
-
-const Schema = mongoose.Schema
-
-const testCollectionSchema = new Schema({}, { strict: false })
-const col = mongoose.model('prioritys', testCollectionSchema);
+import { col } from "../Database/dbConnection";
 
 
 export const tabledatas = async (filter:any,skip:any,limit:any)=>{
