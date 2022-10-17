@@ -24,10 +24,9 @@ class App {
     }
     private async mongoSetup(): Promise<void>{
       (<any>mongoose).Promise = global.Promise;
-     await mongoose.connect(this.mongoUrl, {
-      serverSelectionTimeoutMS: 100000,
-      });
+     await mongoose.connect(this.mongoUrl).then(() => console.log('Database connected'))
+      };
   }
-}
+
 
 export default new App().app;

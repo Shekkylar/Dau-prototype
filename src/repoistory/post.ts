@@ -1,10 +1,11 @@
+import { timeLog } from 'console';
 import * as mongoose from 'mongoose';
 // import { Request, Response } from 'express';
 
 const Schema = mongoose.Schema
 
 const testCollectionSchema = new Schema({}, { strict: false })
-const col = mongoose.model('demo fcllegs', testCollectionSchema);
+const col = mongoose.model('priorirys', testCollectionSchema);
 
 export const filter = async (agg:any)=>{
     const res = await col.aggregate(agg, (err: any, col: any) => {
@@ -26,6 +27,12 @@ export const getleg = async (agg:any)=>{
     return res;
 }
 
+export const charges = async (filter:any)=>{
+    const res = await col.distinct("data.charges.charge_name")
+      return res;
+  }
+
+
 export const batchcode = async (filter:any,skip:any,limit:any)=>{
 
     var y: number = +skip
@@ -39,6 +46,11 @@ export const batchcode = async (filter:any,skip:any,limit:any)=>{
 
   export const count = async (filter:any)=>{
     const res = await col.countDocuments(filter)
+    return (res);
+}  
+
+export const lvl = async (filter:any)=>{
+    const res = await col.findOne(filter,{"data.leg_code":1,"data.vendor.vendor_name":1,"data.sub_vendor.sub_vendor_name":1})
     return (res);
 }  
 
@@ -116,14 +128,23 @@ export const update = async (bulkData:any)=>{
 
     var a:string
     // console.log(filter)
-    col.bulkWrite(bulkData, function(err, res) {
-        if (err) throw err;
-        //console.log("Connected Successfully",res);
+    function delay(ms:number) {
+        const date = Date.now();
+        let currentDate = null;
+        
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < ms);
+    }
     
-    }); 
-    
-
-
+    // console.log("Hello World");
+    await col.bulkWrite(bulkData);
+    delay(10000);
+    console.log("Will be printed after 10 seconds!");
      a="update successful"
     return a;
+
 }
+
+
+

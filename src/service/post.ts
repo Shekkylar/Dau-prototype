@@ -1,6 +1,9 @@
+import { randomBytes } from 'crypto';
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { stringify } from 'querystring';
 
-import { getleg, batchcode, removecharge, updatecharge, addcharge, updateoperation, update, count, filter } from '../repoistory/post';
+import { getleg, batchcode, removecharge, updatecharge, addcharge, updateoperation, update, count, filter, charges, lvl } from '../repoistory/post';
 
 export default class Leg{
 
@@ -10,6 +13,14 @@ export default class Leg{
     console.log(req.query)
       const leg:any= await count(filter);
       return leg;
+}
+
+public async lvl(req:Request) {
+
+  const filter=req.query;
+  console.log(req.query)
+    const leg:any= await lvl(filter);
+    return leg;
 }
 
   public async batchcode(req:Request) {
@@ -198,27 +209,8 @@ public async cargo(req:Request) {
 } 
 
 public async charge(req:Request) {
-  const agg = [
-    {
-      '$match': {
-        'data.batchcode': req.query.batchcode
-      }
-    }, {
-      '$project': {
-        '_id': 0,
-        'data.charges.charge_name': 1
-      }
-    }, {
-      '$group': {
-        '_id': '$data.charges.charge_name'
-      }
-    }, {
-      '$unwind': {
-        'path': '$_id'
-      }
-    }
-  ];
-    const leg:any= await getleg(agg);
+
+    const leg:any= await charges(req.query.batchcode);
     return leg;
 } 
 
@@ -272,10 +264,7 @@ public async updateoperation(req:Request) {
 public async update(req:Request) {
   // const singleBatchCount = 10000;
 //  console.log(req.query)
-  let updatefield = req.query;
-  let filter=updatefield;
-  console.log(Object.values(filter).pop())
-  let a=(Object.keys(filter).pop())
+
   // filter[a]
 //   for(let x in updatefield){
 //     if(updatefield[x]!=Object.values(updatefield).pop()){
@@ -293,11 +282,18 @@ public async update(req:Request) {
 // console.log(filter)
 // console.log(updatefield)
   
+  //  console.log(req.query)
+  //  console.log(Object.keys(req.body))
+  var filter= req.query;
+ var value={$ne : String(Object.values(req.body))}
+ var b=Object.keys(req.body)
+ filter[String(b)]=(value)
+ console.log(filter)
 
-  let records= await count(req.query);
-  // console.log(req.query)
-  console.log(records)
-
+ const updatefileld=req.body;
+ 
+ let records= 1000000;
+ console.log(records);
   // const noOfProcess = Math.ceil(records/singleBatchCount);
   // console.log(noOfProcess)
   
@@ -315,30 +311,34 @@ public async update(req:Request) {
 //       }
 //   const leg:any= await update(bulkData);
 // }
-  while(records>0)
-  {
-    let bulkData = [];
-    if(records>10000){
-    for(let index = 0; index <= 10000; index++ ){ 
-            bulkData.push({ updateOne: {
-              filter: {'data.batchcode':{$ne : "0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk"}},
-              update: { $set: { 'data.batchcode': '0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk' } }
-             } },)
-            }await update(bulkData);
-            records-=10000;
-          }
-    else{
-      for(let index = 0; index <= records; index++ ){ 
-        bulkData.push({ updateOne: {
-            filter: {'data.batchcode':{$ne : "0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk"}},
-            update: { $set: { 'data.batchcode': '0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWk' } }
-         } },)
+console.log(filter)
+console.log(updatefileld)
+while(records>0)
+{
+  let bulkData = [];
+  if(records>10000){
+  for(let index = 0; index <= 10000; index++ ){ 
+          bulkData.push({ updateOne: {
+            filter: filter,
+            update: { $set: updatefileld }
+           } },)
+          }await update(bulkData);
+          records-=10000;
         }
-        await update(bulkData);
-        records-=records;
-        // console.log(records)
+  else{
+    for(let index = 0; index <= records; index++ ){ 
+      bulkData.push({ updateOne: {
+        filter: filter,
+        update: { $set: updatefileld }
+       } },)
       }
-    }     
+      await update(bulkData);
+      records-=records;
+      
+          
+      // console.log(records)
+    }
+  }   
     
   }
 }

@@ -16,6 +16,16 @@ count = async (req: Request, res: Response)=> {
       }
    }
 
+   lvl = async (req: Request, res: Response)=> {
+    
+      try{
+          const response= await this.getleg.lvl(req)
+       res.send(response)
+      } catch(err){
+        res.send(err);
+      }
+   }
+
 
 batchcode = async (req: Request, res: Response)=> {
     
@@ -168,6 +178,8 @@ update = async (req: Request, res: Response)=> {
      res.send(err);
    }
 }
+
+
 
 
 // public vendor (req: Request, res: Response) {

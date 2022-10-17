@@ -19,6 +19,9 @@ export class Routes {
         app.get("/charge",this.Controller.charge)
         app.get("/loadtypes",this.Controller.loadtypes)
         app.get("/batchcode",this.Controller.batchcode)
+
+        //api for getting leg vendor liner
+        app.get("/lvl",this.Controller.lvl)
         
         //Get Count Endpoint
         app.get("/count",this.Controller.count)
