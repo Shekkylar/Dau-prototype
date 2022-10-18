@@ -9,9 +9,9 @@ export default class filterField{
   public async lvl(req:Request) {
 
     const filter=req.query;
-    console.log(req.query)
-      const leg:any= await lvl(filter);
-      return leg;
+    // console.log(req.query)
+      const LVL:any= await lvl(filter);
+      return LVL;
   }
 
   //origin

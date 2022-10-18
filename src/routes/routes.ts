@@ -30,7 +30,7 @@ export class Routes {
 /*-------------------------Table Datas------------------------------------------*/
 
       //api for getting table datas
-      app.get("/lvl",this.TableDatas.datas)
+      app.get("/tabledata",this.TableDatas.datas)
 
 
     }
