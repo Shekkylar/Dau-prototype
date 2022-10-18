@@ -21,23 +21,8 @@ export default class filterField{
       if(filter[x]=='null'||filter[x]=='undefined'||filter[x]==''){
         delete filter[x]
       }
-    }
-
-    const agg = [
-              {
-                '$match': filter
-              }, {
-                '$project': {
-                  '_id': 0,
-                  'meta.origin_port': 1
-                }
-              }, {
-                '$group': {
-                  '_id': '$meta.origin_port'
-                }
-              }
-            ];     
-      const Origin:any= await origin(agg);
+    }  
+      const Origin:any= await origin(filter);
       return Origin;
 } 
 
@@ -49,28 +34,19 @@ export default class filterField{
         delete filter[x]
       }
     }
-    const agg = [
-      {
-        '$match': filter
-      }, {
-        '$project': {
-          '_id': 0,
-          'meta.destination_port': 1
-        }
-      }, {
-        '$group': {
-          '_id': '$meta.destination_port'
-        }
-      }
-    ];
-      const Destination:any= await destination(agg);
+      const Destination:any= await destination(filter);
       return Destination;
   } 
 
   //charge
   public async charge(req:Request) {
-
-    const Charges:any= await charges(req.query);
+    let filter=req.query;
+    for (let x in filter) {
+      if(filter[x]=='null'||filter[x]=='undefined'||filter[x]==''){
+        delete filter[x]
+      }
+    }
+    const Charges:any= await charges(filter);
     return Charges;
 } 
 
