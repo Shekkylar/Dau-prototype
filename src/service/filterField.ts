@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 
+
 import { lvl,origin,destination,charges } from '../repoistory/filterField';
 
 export default class filterField{
@@ -11,7 +12,28 @@ export default class filterField{
     const filter=req.query;
     // console.log(req.query)
       const LVL:any= await lvl(filter);
-      return LVL;
+      let leg=[]
+      let vendor=[]
+      let liner=[]
+      let leg1: { leg: string} = {
+        leg: LVL.data.leg_code,
+    }
+    let liner1: { liner: string} = {
+      liner: LVL.data.sub_vendor.sub_vendor_name,
+  }
+  let vendor1: { vendor: string} = {
+    vendor: LVL.data.vendor.vendor_name,
+}
+      leg.push(leg1)
+      liner.push(liner1)
+      vendor.push(vendor1)
+      let data: {leg:any,liner:any,vendor:any}={
+        leg:leg,
+        liner:liner,
+        vendor:vendor,
+      }
+      
+      return data;
   }
 
   //origin
