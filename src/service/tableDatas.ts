@@ -7,6 +7,7 @@ export default class tableDatas{
 
   //leg,vendor,liner
   public async tabledatas(req:Request) {
+    let datas:any=null;
 
     const filter=req.query;
     const skip=req.query.skip;
@@ -20,31 +21,31 @@ export default class tableDatas{
     }
     delete filter.start_date;
     delete filter.end_date;
-    delete filter.skip;
+    delete filter.skip;"null"
     delete filter.limit;
     console.log(filter)
     
 
 
-    if(start_date!=undefined||end_date!=undefined)
+    if(start_date!="null"||end_date!="null")
     {
-      if(start_date!=undefined&&end_date===undefined)
+      if(start_date!="null"&&end_date==="null")
       {
         start_date=start_date+"T00:00:00.000Z";
         var value={$gt : String(start_date)}
         filter['meta.start_date']=value;
         console.log(filter,"====")
-        const datas:any= await tabledatas(filter,skip,limit);
-        return datas;
+        datas= await tabledatas(filter,skip,limit);
+        
       }
-      else if(start_date===undefined&&end_date!=undefined)
+      else if(start_date==="null"&&end_date!="null")
       {
         end_date=end_date+"T00:00:00.000Z";
         var value1={$lt : String(end_date)}
         filter['data.expiry']=value1;
         console.log(filter,"====")
-        const datas:any= await tabledatas(filter,skip,limit);
-        return datas;
+         datas= await tabledatas(filter,skip,limit);
+       
       }
       else{
         start_date=start_date+"T00:00:00.000Z";
@@ -54,13 +55,15 @@ export default class tableDatas{
         var value1={$lt : String(end_date)}
         filter['data.expiry']=value1;
         console.log(filter,"====")
-        const datas:any= await tabledatas(filter,skip,limit);
-        return datas;
+         datas= await tabledatas(filter,skip,limit);
+        
       }
     }
     else{
-      const datas:any= await tabledatas(filter,skip,limit);
-      const output=[]
+       datas= await tabledatas(filter,skip,limit);
+    }
+    console.log(datas)
+    const output=[]
       for(let i=0;i<datas.length;i++){
       let temp:{_id:any,origin_port:any,destination_port:any,via_port:any,load_type:any,contract_number:any,start_date:any,remarks:any,inclusion:any,expiry:any,other_charges:any,if_applicable_charges:any,via_pol:any,via_pod:any,service_type:any,cargo_type:any,commodity:any,charges:any}=
       {
@@ -90,4 +93,3 @@ export default class tableDatas{
       
   }
 
-}
