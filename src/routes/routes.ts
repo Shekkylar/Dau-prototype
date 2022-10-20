@@ -1,9 +1,12 @@
 import {Request, Response} from "express";
 import { FilterField } from "../controller/flterField";
 import { TableDatas } from "../controller/tableDatas";
+import { TotalCount } from "../controller/count";
 export class Routes {
     public FilterField: FilterField = new FilterField();
     public TableDatas: TableDatas= new TableDatas();
+    public TotalCount: TotalCount= new TotalCount();
+
     public routes(app:any): void {
         app.route('/')
         .get((req: Request, res: Response) => {
@@ -31,6 +34,12 @@ export class Routes {
 
       //api for getting table datas
       app.get("/tabledata",this.TableDatas.datas)
+
+
+/*------------------------------count--------------------------------------------*/
+     
+    //api for count
+    app.get("/count",this.TotalCount.count)        
 
 
     }
