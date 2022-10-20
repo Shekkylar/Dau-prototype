@@ -261,84 +261,107 @@ public async updateoperation(req:Request) {
   return leg;
 }
 
-public async update(req:Request) {
-  // const singleBatchCount = 10000;
-//  console.log(req.query)
+// public async update(req:Request) {
+//   // const singleBatchCount = 10000;
+// //  console.log(req.query)
 
-  // filter[a]
-//   for(let x in updatefield){
-//     if(updatefield[x]!=Object.values(updatefield).pop()){
-//         delete updatefield[x]
-//       }
-// }
+//   // filter[a]
+// //   for(let x in updatefield){
+// //     if(updatefield[x]!=Object.values(updatefield).pop()){
+// //         delete updatefield[x]
+// //       }
+// // }
 
-// for(let x in filter){
-//   // if(filter[x]==Object.values(filter).pop()){
-//   //     delete filter[x]
-//   //   }
-//   console.log(x)
-// }
+// // for(let x in filter){
+// //   // if(filter[x]==Object.values(filter).pop()){
+// //   //     delete filter[x]
+// //   //   }
+// //   console.log(x)
+// // }
 
-// console.log(filter)
-// console.log(updatefield)
+// // console.log(filter)
+// // console.log(updatefield)
   
-  //  console.log(req.query)
-  //  console.log(Object.keys(req.body))
-  var filter= req.query;
- var value={$ne : String(Object.values(req.body))}
- var b=Object.keys(req.body)
- filter[String(b)]=(value)
- console.log(filter)
+//   //  console.log(req.query)
+//   //  console.log(Object.keys(req.body))
+//   var filter= req.query;
+//  var value={$ne : String(Object.values(req.body))}
+//  var b=Object.keys(req.body)
+//  filter[String(b)]=(value)
+//  console.log(filter)
 
- const updatefileld=req.body;
+//  const updatefileld=req.body;
  
- let records= 1000000;
- console.log(records);
-  // const noOfProcess = Math.ceil(records/singleBatchCount);
-  // console.log(noOfProcess)
+//  let records= 1000000;
+//  console.log(records);
+//   // const noOfProcess = Math.ceil(records/singleBatchCount);
+//   // console.log(noOfProcess)
   
-//   for(let index = 1; index <= noOfProcess; index++) {       
-//     let startCount = (index == 1) ? index : (((index - 1) * singleBatchCount) + 1); 
-//     let endCount = index * singleBatchCount;
-//     console.log(startCount)
-//     console.log(endCount)
-//     let bulkData = [];
-//     for(let index = startCount; index <= endCount; index++ ){ 
+// //   for(let index = 1; index <= noOfProcess; index++) {       
+// //     let startCount = (index == 1) ? index : (((index - 1) * singleBatchCount) + 1); 
+// //     let endCount = index * singleBatchCount;
+// //     console.log(startCount)
+// //     console.log(endCount)
+// //     let bulkData = [];
+// //     for(let index = startCount; index <= endCount; index++ ){ 
+// //       bulkData.push({ updateOne: {
+// //           filter: {'data.slab':{$ne : "30009"}},
+// //           update: { $set: { 'data.slab': '30009' } }
+// //        } },)
+// //       }
+// //   const leg:any= await update(bulkData);
+// // }
+// console.log(filter)
+// console.log(updatefileld)
+// while(records>0)
+// {
+//   let bulkData = [];
+//   if(records>10000){
+//   for(let index = 0; index <= 10000; index++ ){ 
+//           bulkData.push({ updateOne: {
+//             filter: filter,
+//             update: { $set: updatefileld }
+//            } },)
+//           }await update(bulkData);
+//           records-=10000;
+//         }
+//   else{
+//     for(let index = 0; index <= records; index++ ){ 
 //       bulkData.push({ updateOne: {
-//           filter: {'data.slab':{$ne : "30009"}},
-//           update: { $set: { 'data.slab': '30009' } }
+//         filter: filter,
+//         update: { $set: updatefileld }
 //        } },)
 //       }
-//   const leg:any= await update(bulkData);
-// }
-console.log(filter)
-console.log(updatefileld)
-while(records>0)
-{
-  let bulkData = [];
-  if(records>10000){
-  for(let index = 0; index <= 10000; index++ ){ 
-          bulkData.push({ updateOne: {
-            filter: filter,
-            update: { $set: updatefileld }
-           } },)
-          }await update(bulkData);
-          records-=10000;
-        }
-  else{
-    for(let index = 0; index <= records; index++ ){ 
-      bulkData.push({ updateOne: {
-        filter: filter,
-        update: { $set: updatefileld }
-       } },)
-      }
-      await update(bulkData);
-      records-=records;
+//       await update(bulkData);
+//       records-=records;
       
           
-      // console.log(records)
-    }
-  }   
+//       // console.log(records)
+//     }
+//   }   
     
+//   }
+
+public async update(req:Request) {
+    const singleBatchCount = 5000;
+    let records= 500000;
+    const noOfProcess = Math.ceil(records/singleBatchCount);
+    for(let index = 1; index <= noOfProcess; index++) {       
+      let startCount = (index == 1) ? index-1 : (((index - 1) * singleBatchCount)); 
+      let endCount = index * singleBatchCount;
+      await update(startCount,endCount).then(()=>delay(3000));
+
+      console.log(startCount,endCount)
+
   }
+  function delay(ms:number) {
+    const date = Date.now();
+    let currentDate = null;
+    
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < ms);
+}
+}
+
 }

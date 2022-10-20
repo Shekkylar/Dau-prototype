@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema
 
 const testCollectionSchema = new Schema({}, { strict: false })
-const col = mongoose.model('priorirys', testCollectionSchema);
+const col = mongoose.model('prioritys', testCollectionSchema);
 
 export const filter = async (agg:any)=>{
     const res = await col.aggregate(agg, (err: any, col: any) => {
@@ -124,27 +124,44 @@ export const updateoperation = async (_id:any,filter:any)=>{
     return a;
 }
 
-export const update = async (bulkData:any)=>{
+// export const update = async (bulkData:any)=>{
 
-    var a:string
-    // console.log(filter)
-    function delay(ms:number) {
-        const date = Date.now();
-        let currentDate = null;
+//     var a:string
+//     // console.log(filter)
+//     function delay(ms:number) {
+//         const date = Date.now();
+//         let currentDate = null;
         
-        do {
-            currentDate = Date.now();
-        } while (currentDate - date < ms);
-    }
+//         do {
+//             currentDate = Date.now();
+//         } while (currentDate - date < ms);
+//     }
     
-    // console.log("Hello World");
-    await col.bulkWrite(bulkData);
-    delay(10000);
-    console.log("Will be printed after 10 seconds!");
-     a="update successful"
-    return a;
+//     // console.log("Hello World");
+//     await col.bulkWrite(bulkData);
+//     delay(10000);
+//     console.log("Will be printed after 10 seconds!");
+//      a="update successful"
+//     return a;
 
+// }
+
+
+
+export const update = async (skip:any,limit:any)=>{
+    let IDs: unknown[]=[];
+
+    const res =(await col.find({ "data.batchcode": "0DEt0r3Xzrb2SSw50FGhJ36aG5h8RLY95sdhntWa" },{_id:1}).sort({_id:1}).batchSize(100).skip(skip)
+        .limit(limit)).forEach(async function( aRow ) {
+            console.log(aRow);
+          col.updateMany({_id: { $in: aRow}},
+                { "$set": { "meta.destination_port": "port" + Math.floor(Math.random() * 15000) } } 
+                )
+                // .then(()=>{console.log("updated")}
+                // )
+                // delay(3000);
+            })
+          
+        
+    return ''; 
 }
-
-
-
